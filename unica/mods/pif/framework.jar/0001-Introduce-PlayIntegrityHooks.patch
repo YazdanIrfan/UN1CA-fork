@@ -1,4 +1,4 @@
-From 9a14f31f0781ea99aa447b01c20bd309e9a07bc8 Mon Sep 17 00:00:00 2001
+From 841abb5ea08c3e20ff8403d596762127ab61a4ed Mon Sep 17 00:00:00 2001
 From: Salvo Giangreco <giangrecosalvo9@gmail.com>
 Date: Mon, 6 Oct 2025 15:14:36 +0200
 Subject: [PATCH] Introduce PlayIntegrityHooks
@@ -8,8 +8,8 @@ UN1CA: this patch is not complete! Please check unica/mods/pif/customize.sh for 
  .../keystore2/AndroidKeyStoreSpi.smali        |    2 +
  ...grityHooks$$ExternalSyntheticLambda0.smali |   30 +
  .../mesalabs/unica/PlayIntegrityHooks$1.smali |   79 ++
- .../mesalabs/unica/PlayIntegrityHooks.smali   | 1032 +++++++++++++++++
- 4 files changed, 1143 insertions(+)
+ .../mesalabs/unica/PlayIntegrityHooks.smali   | 1048 +++++++++++++++++
+ 4 files changed, 1217 insertions(+)
  create mode 100644 smali_classes6/io/mesalabs/unica/PlayIntegrityHooks$$ExternalSyntheticLambda0.smali
  create mode 100644 smali_classes6/io/mesalabs/unica/PlayIntegrityHooks$1.smali
  create mode 100644 smali_classes6/io/mesalabs/unica/PlayIntegrityHooks.smali
@@ -150,10 +150,10 @@ index 00000000..8140305a
 +.end method
 diff --git a/smali_classes6/io/mesalabs/unica/PlayIntegrityHooks.smali b/smali_classes6/io/mesalabs/unica/PlayIntegrityHooks.smali
 new file mode 100644
-index 00000000..52e34332
+index 00000000..dc87c586
 --- /dev/null
 +++ b/smali_classes6/io/mesalabs/unica/PlayIntegrityHooks.smali
-@@ -0,0 +1,1032 @@
+@@ -0,0 +1,1140 @@
 +.class public final Lio/mesalabs/unica/PlayIntegrityHooks;
 +.super Ljava/lang/Object;
 +.source "PlayIntegrityHooks.java"
@@ -174,7 +174,7 @@ index 00000000..52e34332
 +
 +.field private static final blacklist PIF_DEVICE_INITIAL_SDK_INT:Ljava/lang/String; = "32"
 +
-+.field private static final blacklist PIF_FINGERPRINT:Ljava/lang/String; = "google/bluejay/bluejay:14/UQ1A.240205.002/11264188:user/release-keys"
++.field private static final blacklist PIF_FINGERPRINT:Ljava/lang/String; = "google/bluejay_beta/bluejay:CANARY/ZP11.260918.007/16484274:user/release-keys"
 +
 +.field private static final blacklist PIF_ID:Ljava/lang/String; = "null"
 +
@@ -188,7 +188,7 @@ index 00000000..52e34332
 +
 +.field private static final blacklist PIF_RELEASE:Ljava/lang/String; = "null"
 +
-+.field private static final blacklist PIF_SECURITY_PATCH:Ljava/lang/String; = "2024-02-05"
++.field private static final blacklist PIF_SECURITY_PATCH:Ljava/lang/String; = "2026-10-05"
 +
 +.field private static final blacklist PIF_VERSION:Ljava/lang/String; = "20261016"
 +
@@ -324,7 +324,7 @@ index 00000000..52e34332
 +
 +    const-string v0, "persist.sys.unica.pif"
 +
-+    const/4 v1, 0x1
++    const/4 v1, 0x0
 +
 +    invoke-static {v0, v1}, Landroid/os/SemSystemProperties;->getBoolean(Ljava/lang/String;Z)Z
 +
@@ -400,7 +400,7 @@ index 00000000..52e34332
 +.end method
 +
 +.method private static blacklist setPropValue(Ljava/lang/String;Ljava/lang/Object;)V
-+    .locals 2
++    .locals 5
 +
 +    const-string v0, "Defining prop "
 +
@@ -443,9 +443,33 @@ index 00000000..52e34332
 +
 +    invoke-virtual {v0, v1}, Ljava/lang/reflect/Field;->setAccessible(Z)V
 +
-+    const/4 v1, 0x0
++    const-class v2, Ljava/lang/reflect/Field;
 +
-+    invoke-virtual {v0, v1, p1}, Ljava/lang/reflect/Field;->set(Ljava/lang/Object;Ljava/lang/Object;)V
++    const-string v3, "offset"
++
++    invoke-virtual {v2, v3}, Ljava/lang/Class;->getDeclaredField(Ljava/lang/String;)Ljava/lang/reflect/Field;
++
++    move-result-object v2
++
++    invoke-virtual {v2, v1}, Ljava/lang/reflect/Field;->setAccessible(Z)V
++
++    invoke-virtual {v2, v0}, Ljava/lang/reflect/Field;->getInt(Ljava/lang/Object;)I
++
++    move-result v2
++
++    int-to-long v2, v2
++
++    invoke-virtual {v0}, Ljava/lang/reflect/Field;->getDeclaringClass()Ljava/lang/Class;
++
++    move-result-object v4
++
++    invoke-static {}, Lsun/misc/Unsafe;->getUnsafe()Lsun/misc/Unsafe;
++
++    move-result-object v1
++
++    invoke-virtual {v1, v4, v2, v3, p1}, Lsun/misc/Unsafe;->putObject(Ljava/lang/Object;JLjava/lang/Object;)V
++
++    const/4 v1, 0x0
 +
 +    const/4 p1, 0x0
 +
@@ -473,15 +497,15 @@ index 00000000..52e34332
 +
 +    move-result-object p0
 +
-+    const-string v0, "PlayIntegrityHooks"
-+
-+    invoke-static {v0, p0, p1}, Landroid/util/Log;->e(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
++    invoke-static {p0}, Lio/mesalabs/unica/PlayIntegrityHooks;->dlog(Ljava/lang/String;)V
 +
 +    return-void
 +.end method
 +
 +.method public static blacklist setProps(Landroid/content/Context;)V
-+    .locals 2
++    .locals 3
++
++    move-object v2, p0
 +
 +    invoke-virtual {p0}, Landroid/content/Context;->getPackageName()Ljava/lang/String;
 +
@@ -523,7 +547,7 @@ index 00000000..52e34332
 +
 +    if-eqz v0, :cond_2
 +
-+    invoke-static {}, Lio/mesalabs/unica/PlayIntegrityHooks;->shouldTryToCertifyDevice()Z
++    invoke-static {v2}, Lio/mesalabs/unica/PlayIntegrityHooks;->shouldTryToCertifyDevice(Landroid/content/Context;)Z
 +
 +    move-result p0
 +
@@ -554,7 +578,7 @@ index 00000000..52e34332
 +.end method
 +
 +.method private static blacklist setVersionFieldInt(Ljava/lang/String;I)V
-+    .locals 2
++    .locals 5
 +
 +    :try_start_0
 +    const-class v0, Landroid/os/Build$VERSION;
@@ -567,13 +591,31 @@ index 00000000..52e34332
 +
 +    invoke-virtual {v0, v1}, Ljava/lang/reflect/Field;->setAccessible(Z)V
 +
-+    invoke-static {p1}, Ljava/lang/Integer;->valueOf(I)Ljava/lang/Integer;
++    const-class v2, Ljava/lang/reflect/Field;
 +
-+    move-result-object p1
++    const-string v3, "offset"
 +
-+    const/4 v1, 0x0
++    invoke-virtual {v2, v3}, Ljava/lang/Class;->getDeclaredField(Ljava/lang/String;)Ljava/lang/reflect/Field;
 +
-+    invoke-virtual {v0, v1, p1}, Ljava/lang/reflect/Field;->set(Ljava/lang/Object;Ljava/lang/Object;)V
++    move-result-object v2
++
++    invoke-virtual {v2, v1}, Ljava/lang/reflect/Field;->setAccessible(Z)V
++
++    invoke-virtual {v2, v0}, Ljava/lang/reflect/Field;->getInt(Ljava/lang/Object;)I
++
++    move-result v2
++
++    int-to-long v2, v2
++
++    invoke-virtual {v0}, Ljava/lang/reflect/Field;->getDeclaringClass()Ljava/lang/Class;
++
++    move-result-object v4
++
++    invoke-static {}, Lsun/misc/Unsafe;->getUnsafe()Lsun/misc/Unsafe;
++
++    move-result-object v1
++
++    invoke-virtual {v1, v4, v2, v3, p1}, Lsun/misc/Unsafe;->putInt(Ljava/lang/Object;JI)V
 +
 +    const/4 p1, 0x0
 +
@@ -601,15 +643,13 @@ index 00000000..52e34332
 +
 +    move-result-object p0
 +
-+    const-string v0, "PlayIntegrityHooks"
-+
-+    invoke-static {v0, p0, p1}, Landroid/util/Log;->e(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
++    invoke-static {p0}, Lio/mesalabs/unica/PlayIntegrityHooks;->dlog(Ljava/lang/String;)V
 +
 +    return-void
 +.end method
 +
 +.method private static blacklist setVersionFieldString(Ljava/lang/String;Ljava/lang/String;)V
-+    .locals 2
++    .locals 5
 +
 +    :try_start_0
 +    const-class v0, Landroid/os/Build$VERSION;
@@ -622,9 +662,31 @@ index 00000000..52e34332
 +
 +    invoke-virtual {v0, v1}, Ljava/lang/reflect/Field;->setAccessible(Z)V
 +
-+    const/4 v1, 0x0
++    const-class v2, Ljava/lang/reflect/Field;
 +
-+    invoke-virtual {v0, v1, p1}, Ljava/lang/reflect/Field;->set(Ljava/lang/Object;Ljava/lang/Object;)V
++    const-string v3, "offset"
++
++    invoke-virtual {v2, v3}, Ljava/lang/Class;->getDeclaredField(Ljava/lang/String;)Ljava/lang/reflect/Field;
++
++    move-result-object v2
++
++    invoke-virtual {v2, v1}, Ljava/lang/reflect/Field;->setAccessible(Z)V
++
++    invoke-virtual {v2, v0}, Ljava/lang/reflect/Field;->getInt(Ljava/lang/Object;)I
++
++    move-result v2
++
++    int-to-long v2, v2
++
++    invoke-virtual {v0}, Ljava/lang/reflect/Field;->getDeclaringClass()Ljava/lang/Class;
++
++    move-result-object v4
++
++    invoke-static {}, Lsun/misc/Unsafe;->getUnsafe()Lsun/misc/Unsafe;
++
++    move-result-object v1
++
++    invoke-virtual {v1, v4, v2, v3, p1}, Lsun/misc/Unsafe;->putObject(Ljava/lang/Object;JLjava/lang/Object;)V
 +
 +    const/4 p1, 0x0
 +
@@ -652,9 +714,7 @@ index 00000000..52e34332
 +
 +    move-result-object p0
 +
-+    const-string v0, "PlayIntegrityHooks"
-+
-+    invoke-static {v0, p0, p1}, Landroid/util/Log;->e(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
++    invoke-static {p0}, Lio/mesalabs/unica/PlayIntegrityHooks;->dlog(Ljava/lang/String;)V
 +
 +    return-void
 +.end method
@@ -719,6 +779,14 @@ index 00000000..52e34332
 +    :try_end_0
 +    .catch Ljava/lang/Exception; {:try_start_0 .. :try_end_0} :catch_0
 +
++    invoke-static {p0}, Landroid/os/UserHandle;->getAppId(I)I
++
++    move-result p0
++
++    invoke-static {v1}, Landroid/os/UserHandle;->getAppId(I)I
++
++    move-result v1
++
 +    if-ne p0, v1, :cond_0
 +
 +    const/4 p0, 0x1
@@ -731,16 +799,14 @@ index 00000000..52e34332
 +    :catch_0
 +    move-exception p0
 +
-+    const-string v0, "PlayIntegrityHooks"
++    const-string p0, "shouldBypassTaskPermission: unable to get gms uid"
 +
-+    const-string v1, "shouldBypassTaskPermission: unable to get gms uid"
-+
-+    invoke-static {v0, v1, p0}, Landroid/util/Log;->e(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
++    invoke-static {p0}, Lio/mesalabs/unica/PlayIntegrityHooks;->dlog(Ljava/lang/String;)V
 +
 +    return v2
 +.end method
 +
-+.method private static blacklist shouldTryToCertifyDevice()Z
++.method private static blacklist shouldTryToCertifyDevice(Landroid/content/Context;)Z
 +    .locals 4
 +
 +    invoke-static {}, Landroid/app/Application;->getProcessName()Ljava/lang/String;
@@ -764,6 +830,36 @@ index 00000000..52e34332
 +    return v1
 +
 +    :cond_0
++
++    # k4: no spoofing while the device is not provisioned (setup wizard / FRP account verification), so a real
++    # Google sign-in there is not rejected ("unable to sign in due to an unknown error").
++    # p0 is the app Context from Instrumentation.newApplication: ActivityThread.currentApplication() is still null there
++    if-eqz p0, :cond_k4_prov
++
++    :try_start_k4
++    invoke-virtual {p0}, Landroid/content/Context;->getContentResolver()Landroid/content/ContentResolver;
++
++    move-result-object v2
++
++    const-string v3, "device_provisioned"
++
++    const/4 v0, 0x1
++
++    invoke-static {v2, v3, v0}, Landroid/provider/Settings$Global;->getInt(Landroid/content/ContentResolver;Ljava/lang/String;I)I
++
++    move-result v2
++    :try_end_k4
++    .catch Ljava/lang/Exception; {:try_start_k4 .. :try_end_k4} :cond_k4_prov
++
++    if-nez v2, :cond_k4_prov
++
++    const-string v3, "Skip spoofing build for GMS, because the device is not provisioned (setup)"
++
++    invoke-static {v3}, Lio/mesalabs/unica/PlayIntegrityHooks;->dlog(Ljava/lang/String;)V
++
++    return v1
++
++    :cond_k4_prov
 +    invoke-static {}, Lio/mesalabs/unica/PlayIntegrityHooks;->isGmsAddAccountActivityOnTop()Z
 +
 +    move-result v0
@@ -1077,7 +1173,7 @@ index 00000000..52e34332
 +    :cond_7
 +    const-string v0, "persist.sys.pif.fingerprint"
 +
-+    const-string v2, "google/bluejay/bluejay:14/UQ1A.240205.002/11264188:user/release-keys"
++    const-string v2, "google/bluejay_beta/bluejay:CANARY/ZP11.260918.007/16484274:user/release-keys"
 +
 +    invoke-static {v0, v2}, Landroid/os/SemSystemProperties;->get(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
 +
@@ -1112,7 +1208,7 @@ index 00000000..52e34332
 +    :cond_8
 +    const-string v0, "persist.sys.pif.security_patch"
 +
-+    const-string v2, "2024-02-05"
++    const-string v2, "2026-10-05"
 +
 +    invoke-static {v0, v2}, Landroid/os/SemSystemProperties;->get(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
 +
@@ -1177,15 +1273,26 @@ index 00000000..52e34332
 +
 +    const-string v1, "DEVICE_INITIAL_SDK_INT"
 +
++    :try_start_sdk
 +    invoke-static {v0}, Ljava/lang/Integer;->parseInt(Ljava/lang/String;)I
 +
 +    move-result v0
++    :try_end_sdk
++    .catch Ljava/lang/NumberFormatException; {:try_start_sdk .. :try_end_sdk} :catch_sdk
 +
 +    invoke-static {v1, v0}, Lio/mesalabs/unica/PlayIntegrityHooks;->setVersionFieldInt(Ljava/lang/String;I)V
 +
 +    :cond_a
 +    return-void
++
++    :catch_sdk
++    move-exception v0
++
++    const-string v0, "Invalid DEVICE_INITIAL_SDK_INT"
++
++    invoke-static {v0}, Lio/mesalabs/unica/PlayIntegrityHooks;->dlog(Ljava/lang/String;)V
++
++    return-void
 +.end method
 -- 
-2.56.0
-
+2.55.0

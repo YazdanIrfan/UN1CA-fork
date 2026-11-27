@@ -43,6 +43,14 @@
 
     invoke-direct {v0}, Ljava/util/ArrayList;-><init>()V
 
+    new-instance v1, Lio/mesalabs/unica/settings/keybox/KeyboxLoadPreferenceController;
+
+    const-string/jumbo v2, "unica_keybox_load"
+
+    invoke-direct {v1, p0, v2, p1}, Lio/mesalabs/unica/settings/keybox/KeyboxLoadPreferenceController;-><init>(Landroid/content/Context;Ljava/lang/String;Landroidx/fragment/app/Fragment;)V
+
+    invoke-virtual {v0, v1}, Ljava/util/ArrayList;->add(Ljava/lang/Object;)Z
+
     new-instance v1, Lio/mesalabs/unica/settings/pif/PIFCustomPreferenceController;
 
     const-string/jumbo v2, "unica_pif_custom"

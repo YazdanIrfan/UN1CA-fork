@@ -45,7 +45,7 @@ Subject: [PATCH] Introduce KeyboxImitationHooks
  create mode 100644 smali_classes6/io/mesalabs/unica/KeyboxUtils.smali
 
 diff --git a/smali_classes3/android/security/KeyStore2.smali b/smali_classes3/android/security/KeyStore2.smali
-index 80753521..217b4e3c 100644
+index e913b7a..9415747 100644
 --- a/smali_classes3/android/security/KeyStore2.smali
 +++ b/smali_classes3/android/security/KeyStore2.smali
 @@ -558,7 +558,7 @@
@@ -72,7 +72,7 @@ index 80753521..217b4e3c 100644
      return-object v0
  .end method
 diff --git a/smali_classes4/android/system/keystore2/IKeystoreSecurityLevel$Stub$Proxy.smali b/smali_classes4/android/system/keystore2/IKeystoreSecurityLevel$Stub$Proxy.smali
-index 3f9a0c3e..09d89d0b 100644
+index 2a28fff..72eb7bb 100644
 --- a/smali_classes4/android/system/keystore2/IKeystoreSecurityLevel$Stub$Proxy.smali
 +++ b/smali_classes4/android/system/keystore2/IKeystoreSecurityLevel$Stub$Proxy.smali
 @@ -145,6 +145,15 @@
@@ -83,32 +83,14 @@ index 3f9a0c3e..09d89d0b 100644
 +
 +    move-result-object v0
 +
-+    if-eqz v0, :cond_0
++    if-eqz v0, :unica_keybox_create_operation
 +
 +    return-object v0
 +
-+    :cond_0
++    :unica_keybox_create_operation
      invoke-virtual {p0}, Landroid/system/keystore2/IKeystoreSecurityLevel$Stub$Proxy;->asBinder()Landroid/os/IBinder;
  
      move-result-object v0
-@@ -182,7 +191,7 @@
- 
-     move-result p0
- 
--    if-eqz p0, :cond_0
-+    if-eqz p0, :cond_1
- 
-     invoke-virtual {v1}, Landroid/os/Parcel;->readException()V
- 
-@@ -202,7 +211,7 @@
- 
-     return-object p0
- 
--    :cond_0
-+    :cond_1
-     :try_start_1
-     new-instance p0, Landroid/os/RemoteException;
- 
 @@ -232,6 +241,15 @@
          }
      .end annotation
@@ -117,32 +99,14 @@ index 3f9a0c3e..09d89d0b 100644
 +
 +    move-result v0
 +
-+    if-eqz v0, :cond_0
++    if-eqz v0, :unica_keybox_delete_key
 +
 +    return-void
 +
-+    :cond_0
++    :unica_keybox_delete_key
      invoke-virtual {p0}, Landroid/system/keystore2/IKeystoreSecurityLevel$Stub$Proxy;->asBinder()Landroid/os/IBinder;
  
      move-result-object v0
-@@ -265,7 +283,7 @@
- 
-     move-result p0
- 
--    if-eqz p0, :cond_0
-+    if-eqz p0, :cond_1
- 
-     invoke-virtual {v1}, Landroid/os/Parcel;->readException()V
-     :try_end_0
-@@ -277,7 +295,7 @@
- 
-     return-void
- 
--    :cond_0
-+    :cond_1
-     :try_start_1
-     new-instance p0, Landroid/os/RemoteException;
- 
 @@ -307,6 +325,15 @@
          }
      .end annotation
@@ -151,32 +115,14 @@ index 3f9a0c3e..09d89d0b 100644
 +
 +    move-result-object v0
 +
-+    if-eqz v0, :cond_0
++    if-eqz v0, :unica_keybox_generate_key
 +
 +    return-object v0
 +
-+    :cond_0
++    :unica_keybox_generate_key
      invoke-virtual {p0}, Landroid/system/keystore2/IKeystoreSecurityLevel$Stub$Proxy;->asBinder()Landroid/os/IBinder;
  
      move-result-object v0
-@@ -348,7 +375,7 @@
- 
-     move-result p0
- 
--    if-eqz p0, :cond_0
-+    if-eqz p0, :cond_1
- 
-     invoke-virtual {v1}, Landroid/os/Parcel;->readException()V
- 
-@@ -368,7 +395,7 @@
- 
-     return-object p0
- 
--    :cond_0
-+    :cond_1
-     :try_start_1
-     new-instance p0, Landroid/os/RemoteException;
- 
 @@ -572,6 +599,15 @@
          }
      .end annotation
@@ -185,120 +131,59 @@ index 3f9a0c3e..09d89d0b 100644
 +
 +    move-result-object v0
 +
-+    if-eqz v0, :cond_0
++    if-eqz v0, :unica_keybox_import_key
 +
 +    return-object v0
 +
-+    :cond_0
++    :unica_keybox_import_key
      invoke-virtual {p0}, Landroid/system/keystore2/IKeystoreSecurityLevel$Stub$Proxy;->asBinder()Landroid/os/IBinder;
  
      move-result-object v0
-@@ -613,7 +649,7 @@
- 
-     move-result p0
- 
--    if-eqz p0, :cond_0
-+    if-eqz p0, :cond_1
- 
-     invoke-virtual {v1}, Landroid/os/Parcel;->readException()V
- 
-@@ -633,7 +669,7 @@
- 
-     return-object p0
- 
--    :cond_0
-+    :cond_1
-     :try_start_1
-     new-instance p0, Landroid/os/RemoteException;
- 
 diff --git a/smali_classes4/android/system/keystore2/IKeystoreService$Stub$Proxy.smali b/smali_classes4/android/system/keystore2/IKeystoreService$Stub$Proxy.smali
-index 2bf02c02..0526df77 100644
+index bf76de8..5c16d4a 100644
 --- a/smali_classes4/android/system/keystore2/IKeystoreService$Stub$Proxy.smali
 +++ b/smali_classes4/android/system/keystore2/IKeystoreService$Stub$Proxy.smali
-@@ -62,7 +62,17 @@
+@@ -62,6 +62,15 @@
          }
      .end annotation
  
--    invoke-virtual {p0}, Landroid/system/keystore2/IKeystoreService$Stub$Proxy;->asBinder()Landroid/os/IBinder;
 +    invoke-static {p1}, Lio/mesalabs/unica/KeyboxImitationHooks;->onDeleteKey(Landroid/system/keystore2/KeyDescriptor;)Z
 +
 +    move-result v0
 +
-+    if-eqz v0, :cond_0
++    if-eqz v0, :unica_keybox_delete_key
 +
 +    return-void
 +
-+    :cond_0
-+
-+invoke-virtual {p0}, Landroid/system/keystore2/IKeystoreService$Stub$Proxy;->asBinder()Landroid/os/IBinder;
++    :unica_keybox_delete_key
+     invoke-virtual {p0}, Landroid/system/keystore2/IKeystoreService$Stub$Proxy;->asBinder()Landroid/os/IBinder;
  
      move-result-object v0
- 
-@@ -91,7 +101,7 @@
- 
-     move-result p0
- 
--    if-eqz p0, :cond_0
-+    if-eqz p0, :cond_1
- 
-     invoke-virtual {v1}, Landroid/os/Parcel;->readException()V
-     :try_end_0
-@@ -103,7 +113,7 @@
- 
-     return-void
- 
--    :cond_0
-+    :cond_1
-     :try_start_1
-     new-instance p0, Landroid/os/RemoteException;
- 
-@@ -307,7 +317,17 @@
+@@ -307,6 +316,15 @@
          }
      .end annotation
  
--    invoke-virtual {p0}, Landroid/system/keystore2/IKeystoreService$Stub$Proxy;->asBinder()Landroid/os/IBinder;
 +    invoke-static {p1}, Lio/mesalabs/unica/KeyboxImitationHooks;->onGetKeyEntry(Landroid/system/keystore2/KeyDescriptor;)Landroid/system/keystore2/KeyEntryResponse;
 +
 +    move-result-object v0
 +
-+    if-eqz v0, :cond_0
++    if-eqz v0, :unica_keybox_get_key_entry
 +
 +    return-object v0
 +
-+    :cond_0
-+
-+invoke-virtual {p0}, Landroid/system/keystore2/IKeystoreService$Stub$Proxy;->asBinder()Landroid/os/IBinder;
++    :unica_keybox_get_key_entry
+     invoke-virtual {p0}, Landroid/system/keystore2/IKeystoreService$Stub$Proxy;->asBinder()Landroid/os/IBinder;
  
      move-result-object v0
- 
-@@ -336,7 +356,7 @@
- 
-     move-result p0
- 
--    if-eqz p0, :cond_0
-+    if-eqz p0, :cond_1
- 
-     invoke-virtual {v1}, Landroid/os/Parcel;->readException()V
- 
-@@ -356,7 +376,7 @@
- 
-     return-object p0
- 
--    :cond_0
-+    :cond_1
-     :try_start_1
-     new-instance p0, Landroid/os/RemoteException;
- 
-@@ -386,7 +406,21 @@
+@@ -386,6 +404,19 @@
          }
      .end annotation
  
--    invoke-virtual {p0}, Landroid/system/keystore2/IKeystoreService$Stub$Proxy;->asBinder()Landroid/os/IBinder;
 +    invoke-static {p1}, Lio/mesalabs/unica/KeyboxImitationHooks;->onGetNumberOfEntries(I)Ljava/lang/Integer;
 +
 +    move-result-object v0
 +
-+    if-eqz v0, :cond_0
++    if-eqz v0, :unica_keybox_get_number_of_entries
 +
 +    invoke-virtual {v0}, Ljava/lang/Integer;->intValue()I
 +
@@ -306,217 +191,92 @@ index 2bf02c02..0526df77 100644
 +
 +    return p0
 +
-+    :cond_0
-+
-+invoke-virtual {p0}, Landroid/system/keystore2/IKeystoreService$Stub$Proxy;->asBinder()Landroid/os/IBinder;
++    :unica_keybox_get_number_of_entries
+     invoke-virtual {p0}, Landroid/system/keystore2/IKeystoreService$Stub$Proxy;->asBinder()Landroid/os/IBinder;
  
      move-result-object v0
- 
-@@ -417,7 +451,7 @@
- 
-     move-result p0
- 
--    if-eqz p0, :cond_0
-+    if-eqz p0, :cond_1
- 
-     invoke-virtual {v1}, Landroid/os/Parcel;->readException()V
- 
-@@ -433,7 +467,7 @@
- 
-     return p0
- 
--    :cond_0
-+    :cond_1
-     :try_start_1
-     new-instance p0, Landroid/os/RemoteException;
- 
-@@ -617,7 +651,17 @@
+@@ -617,6 +648,15 @@
          }
      .end annotation
  
--    invoke-virtual {p0}, Landroid/system/keystore2/IKeystoreService$Stub$Proxy;->asBinder()Landroid/os/IBinder;
 +    invoke-static {p1, p2, p3}, Lio/mesalabs/unica/KeyboxImitationHooks;->onGrant(Landroid/system/keystore2/KeyDescriptor;II)Landroid/system/keystore2/KeyDescriptor;
 +
 +    move-result-object v0
 +
-+    if-eqz v0, :cond_0
++    if-eqz v0, :unica_keybox_grant
 +
 +    return-object v0
 +
-+    :cond_0
-+
-+invoke-virtual {p0}, Landroid/system/keystore2/IKeystoreService$Stub$Proxy;->asBinder()Landroid/os/IBinder;
++    :unica_keybox_grant
+     invoke-virtual {p0}, Landroid/system/keystore2/IKeystoreService$Stub$Proxy;->asBinder()Landroid/os/IBinder;
  
      move-result-object v0
- 
-@@ -650,7 +694,7 @@
- 
-     move-result p0
- 
--    if-eqz p0, :cond_0
-+    if-eqz p0, :cond_1
- 
-     invoke-virtual {v1}, Landroid/os/Parcel;->readException()V
- 
-@@ -670,7 +714,7 @@
- 
-     return-object p0
- 
--    :cond_0
-+    :cond_1
-     :try_start_1
-     new-instance p0, Landroid/os/RemoteException;
- 
-@@ -700,7 +744,17 @@
-         }
+@@ -703,6 +743,15 @@
+     .annotation runtime Ljava/lang/Deprecated;
      .end annotation
  
--    .annotation runtime Ljava/lang/Deprecated;
 +    invoke-static {p1}, Lio/mesalabs/unica/KeyboxImitationHooks;->onListEntries(I)[Landroid/system/keystore2/KeyDescriptor;
 +
 +    move-result-object v0
 +
-+    if-eqz v0, :cond_0
++    if-eqz v0, :unica_keybox_list_entries
 +
 +    return-object v0
 +
-+    :cond_0
-+
-+.annotation runtime Ljava/lang/Deprecated;
-     .end annotation
- 
++    :unica_keybox_list_entries
      invoke-virtual {p0}, Landroid/system/keystore2/IKeystoreService$Stub$Proxy;->asBinder()Landroid/os/IBinder;
-@@ -734,7 +788,7 @@
  
-     move-result p0
- 
--    if-eqz p0, :cond_0
-+    if-eqz p0, :cond_1
- 
-     invoke-virtual {v1}, Landroid/os/Parcel;->readException()V
- 
-@@ -754,7 +808,7 @@
- 
-     return-object p0
- 
--    :cond_0
-+    :cond_1
-     :try_start_1
-     new-instance p0, Landroid/os/RemoteException;
- 
-@@ -784,7 +838,17 @@
+     move-result-object v0
+@@ -784,6 +833,15 @@
          }
      .end annotation
  
--    invoke-virtual {p0}, Landroid/system/keystore2/IKeystoreService$Stub$Proxy;->asBinder()Landroid/os/IBinder;
 +    invoke-static {p1, p4}, Lio/mesalabs/unica/KeyboxImitationHooks;->onListEntriesBatched(ILjava/lang/String;)[Landroid/system/keystore2/KeyDescriptor;
 +
 +    move-result-object v0
 +
-+    if-eqz v0, :cond_0
++    if-eqz v0, :unica_keybox_list_entries_batched
 +
 +    return-object v0
 +
-+    :cond_0
-+
-+invoke-virtual {p0}, Landroid/system/keystore2/IKeystoreService$Stub$Proxy;->asBinder()Landroid/os/IBinder;
++    :unica_keybox_list_entries_batched
+     invoke-virtual {p0}, Landroid/system/keystore2/IKeystoreService$Stub$Proxy;->asBinder()Landroid/os/IBinder;
  
      move-result-object v0
- 
-@@ -817,7 +881,7 @@
- 
-     move-result p0
- 
--    if-eqz p0, :cond_0
-+    if-eqz p0, :cond_1
- 
-     invoke-virtual {v1}, Landroid/os/Parcel;->readException()V
- 
-@@ -837,7 +901,7 @@
- 
-     return-object p0
- 
--    :cond_0
-+    :cond_1
-     :try_start_1
-     new-instance p0, Landroid/os/RemoteException;
- 
-@@ -867,7 +931,17 @@
+@@ -867,6 +925,15 @@
          }
      .end annotation
  
--    invoke-virtual {p0}, Landroid/system/keystore2/IKeystoreService$Stub$Proxy;->asBinder()Landroid/os/IBinder;
 +    invoke-static {p1, p2}, Lio/mesalabs/unica/KeyboxImitationHooks;->onUngrant(Landroid/system/keystore2/KeyDescriptor;I)Z
 +
 +    move-result v0
 +
-+    if-eqz v0, :cond_0
++    if-eqz v0, :unica_keybox_ungrant
 +
 +    return-void
 +
-+    :cond_0
-+
-+invoke-virtual {p0}, Landroid/system/keystore2/IKeystoreService$Stub$Proxy;->asBinder()Landroid/os/IBinder;
++    :unica_keybox_ungrant
+     invoke-virtual {p0}, Landroid/system/keystore2/IKeystoreService$Stub$Proxy;->asBinder()Landroid/os/IBinder;
  
      move-result-object v0
- 
-@@ -898,7 +972,7 @@
- 
-     move-result p0
- 
--    if-eqz p0, :cond_0
-+    if-eqz p0, :cond_1
- 
-     invoke-virtual {v1}, Landroid/os/Parcel;->readException()V
-     :try_end_0
-@@ -910,7 +984,7 @@
- 
-     return-void
- 
--    :cond_0
-+    :cond_1
-     :try_start_1
-     new-instance p0, Landroid/os/RemoteException;
- 
-@@ -940,7 +1014,17 @@
+@@ -940,6 +1007,15 @@
          }
      .end annotation
  
--    invoke-virtual {p0}, Landroid/system/keystore2/IKeystoreService$Stub$Proxy;->asBinder()Landroid/os/IBinder;
 +    invoke-static {p1, p2, p3}, Lio/mesalabs/unica/KeyboxImitationHooks;->onUpdateSubcomponent(Landroid/system/keystore2/KeyDescriptor;[B[B)Z
 +
 +    move-result v0
 +
-+    if-eqz v0, :cond_0
++    if-eqz v0, :unica_keybox_update_subcomponent
 +
 +    return-void
 +
-+    :cond_0
-+
-+invoke-virtual {p0}, Landroid/system/keystore2/IKeystoreService$Stub$Proxy;->asBinder()Landroid/os/IBinder;
++    :unica_keybox_update_subcomponent
+     invoke-virtual {p0}, Landroid/system/keystore2/IKeystoreService$Stub$Proxy;->asBinder()Landroid/os/IBinder;
  
      move-result-object v0
- 
-@@ -973,7 +1057,7 @@
- 
-     move-result p0
- 
--    if-eqz p0, :cond_0
-+    if-eqz p0, :cond_1
- 
-     invoke-virtual {v1}, Landroid/os/Parcel;->readException()V
-     :try_end_0
-@@ -985,7 +1069,7 @@
- 
-     return-void
- 
--    :cond_0
-+    :cond_1
-     :try_start_1
-     new-instance p0, Landroid/os/RemoteException;
- 
 diff --git a/smali_classes5/com/android/internal/org/bouncycastle/jcajce/provider/asymmetric/EC$Mappings.smali b/smali_classes5/com/android/internal/org/bouncycastle/jcajce/provider/asymmetric/EC$Mappings.smali
-index 7da5e848..581668b7 100644
+index 7da5e84..581668b 100644
 --- a/smali_classes5/com/android/internal/org/bouncycastle/jcajce/provider/asymmetric/EC$Mappings.smali
 +++ b/smali_classes5/com/android/internal/org/bouncycastle/jcajce/provider/asymmetric/EC$Mappings.smali
 @@ -26,7 +26,19 @@
@@ -571,7 +331,7 @@ new file mode 100644
 index 00000000..a705d18c
 --- /dev/null
 +++ b/smali_classes6/io/mesalabs/unica/KeyProviderManager$DefaultKeyboxProvider.smali
-@@ -0,0 +1,788 @@
+@@ -0,0 +1,709 @@
 +.class Lio/mesalabs/unica/KeyProviderManager$DefaultKeyboxProvider;
 +.super Ljava/lang/Object;
 +.source "KeyProviderManager.java"
@@ -753,67 +513,13 @@ index 00000000..a705d18c
 +
 +    move-result-object p1
 +
-+    const-string v1, "unica_keybox_enabled"
-+
-+    const/4 v2, 0x1
-+
-+    invoke-static {p1, v1, v2}, Landroid/provider/Settings$Secure;->getInt(Landroid/content/ContentResolver;Ljava/lang/String;I)I
-+
-+    move-result v1
-+
-+    if-nez v1, :cond_check_enabled
-+
-+    iget-object p0, p0, Lio/mesalabs/unica/KeyProviderManager$DefaultKeyboxProvider;->keyboxData:Ljava/util/Map;
-+
-+    invoke-interface {p0}, Ljava/util/Map;->clear()V
-+
-+    return-void
-+
-+    :cond_check_enabled
 +    const-string v1, "unica_keybox_data"
 +
 +    invoke-static {p1, v1}, Landroid/provider/Settings$Secure;->getString(Landroid/content/ContentResolver;Ljava/lang/String;)Ljava/lang/String;
 +
 +    move-result-object p1
 +
-+    if-eqz p1, :cond_check_file
-+
-+    invoke-virtual {p1}, Ljava/lang/String;->trim()Ljava/lang/String;
-+
-+    move-result-object v1
-+
-+    invoke-virtual {v1}, Ljava/lang/String;->isEmpty()Z
-+
-+    move-result v1
-+
-+    if-eqz v1, :cond_0
-+
-+    :cond_check_file
-+    new-instance v1, Ljava/io/File;
-+
-+    const-string/jumbo v2, "/system/etc/security/keybox.xml"
-+
-+    invoke-direct {v1, v2}, Ljava/io/File;-><init>(Ljava/lang/String;)V
-+
-+    invoke-virtual {v1}, Ljava/io/File;->exists()Z
-+
-+    move-result v2
-+
-+    if-eqz v2, :goto_4
-+
-+    invoke-virtual {v1}, Ljava/io/File;->toPath()Ljava/nio/file/Path;
-+
-+    move-result-object v1
-+
-+    invoke-static {v1}, Ljava/nio/file/Files;->readAllBytes(Ljava/nio/file/Path;)[B
-+
-+    move-result-object v1
-+
-+    new-instance p1, Ljava/lang/String;
-+
-+    sget-object v2, Ljava/nio/charset/StandardCharsets;->UTF_8:Ljava/nio/charset/Charset;
-+
-+    invoke-direct {p1, v1, v2}, Ljava/lang/String;-><init>([BLjava/nio/charset/Charset;)V
++    if-eqz p1, :cond_a
 +
 +    invoke-virtual {p1}, Ljava/lang/String;->trim()Ljava/lang/String;
 +
@@ -1047,20 +753,8 @@ index 00000000..a705d18c
 +
 +    move-result v5
 +
-+    if-eqz v5, :cond_check_ec
-+
-+    goto :cond_is_ec
-+
-+    :cond_check_ec
-+    const-string v5, "ec"
-+
-+    invoke-virtual {v5, p1}, Ljava/lang/String;->equalsIgnoreCase(Ljava/lang/String;)Z
-+
-+    move-result v5
-+
 +    if-eqz v5, :cond_3
 +
-+    :cond_is_ec
 +    const-string p1, "EC"
 +
 +    :goto_1
@@ -1182,9 +876,11 @@ index 00000000..a705d18c
 +    :cond_7
 +    if-nez v4, :cond_8
 +
-+    const-string v4, "Missing <NumberOfKeyboxes> in keybox XML, continuing anyway"
++    const-string p0, "Missing <NumberOfKeyboxes> in keybox XML"
 +
-+    invoke-static {v0, v4}, Landroid/util/Log;->d(Ljava/lang/String;Ljava/lang/String;)I
++    invoke-static {v0, p0}, Landroid/util/Log;->w(Ljava/lang/String;Ljava/lang/String;)I
++
++    return-void
 +
 +    :cond_8
 +    invoke-virtual {p0}, Lio/mesalabs/unica/KeyProviderManager$DefaultKeyboxProvider;->hasKeybox()Z
@@ -1291,23 +987,6 @@ index 00000000..a705d18c
 +
 +    iget-object v0, p0, Lio/mesalabs/unica/KeyProviderManager$DefaultKeyboxProvider;->keyboxData:Ljava/util/Map;
 +
-+    invoke-interface {v0}, Ljava/util/Map;->isEmpty()Z
-+
-+    move-result v0
-+
-+    if-eqz v0, :cond_start_check
-+
-+    invoke-static {}, Lio/mesalabs/unica/KeyboxUtils;->getApplicationContext()Landroid/content/Context;
-+
-+    move-result-object v0
-+
-+    if-eqz v0, :cond_start_check
-+
-+    invoke-direct {p0, v0}, Lio/mesalabs/unica/KeyProviderManager$DefaultKeyboxProvider;->loadFromXmlSetting(Landroid/content/Context;)V
-+
-+    :cond_start_check
-+    iget-object v0, p0, Lio/mesalabs/unica/KeyProviderManager$DefaultKeyboxProvider;->keyboxData:Ljava/util/Map;
-+
 +    const-string v1, "EC.PRIV"
 +
 +    invoke-interface {v0, v1}, Ljava/util/Map;->containsKey(Ljava/lang/Object;)Z
@@ -1316,23 +995,8 @@ index 00000000..a705d18c
 +
 +    const/4 v1, 0x0
 +
-+    if-eqz v0, :cond_check_rsa
++    if-eqz v0, :cond_2
 +
-+    iget-object v0, p0, Lio/mesalabs/unica/KeyProviderManager$DefaultKeyboxProvider;->keyboxData:Ljava/util/Map;
-+
-+    const-string v2, "EC.CERT_1"
-+
-+    invoke-interface {v0, v2}, Ljava/util/Map;->containsKey(Ljava/lang/Object;)Z
-+
-+    move-result v0
-+
-+    if-eqz v0, :cond_check_rsa
-+
-+    const/4 v0, 0x1
-+
-+    return v0
-+
-+    :cond_check_rsa
 +    iget-object v0, p0, Lio/mesalabs/unica/KeyProviderManager$DefaultKeyboxProvider;->keyboxData:Ljava/util/Map;
 +
 +    const-string v2, "RSA.PRIV"
@@ -1341,7 +1005,20 @@ index 00000000..a705d18c
 +
 +    move-result v0
 +
-+    if-eqz v0, :cond_none
++    if-nez v0, :cond_0
++
++    goto :goto_0
++
++    :cond_0
++    iget-object v0, p0, Lio/mesalabs/unica/KeyProviderManager$DefaultKeyboxProvider;->keyboxData:Ljava/util/Map;
++
++    const-string v2, "EC.CERT_1"
++
++    invoke-interface {v0, v2}, Ljava/util/Map;->containsKey(Ljava/lang/Object;)Z
++
++    move-result v0
++
++    if-eqz v0, :cond_2
 +
 +    iget-object p0, p0, Lio/mesalabs/unica/KeyProviderManager$DefaultKeyboxProvider;->keyboxData:Ljava/util/Map;
 +
@@ -1351,13 +1028,17 @@ index 00000000..a705d18c
 +
 +    move-result p0
 +
-+    if-eqz p0, :cond_none
++    if-nez p0, :cond_1
 +
++    goto :goto_0
++
++    :cond_1
 +    const/4 p0, 0x1
 +
 +    return p0
 +
-+    :cond_none
++    :cond_2
++    :goto_0
 +    return v1
 +.end method
 diff --git a/smali_classes6/io/mesalabs/unica/KeyProviderManager-IA.smali b/smali_classes6/io/mesalabs/unica/KeyProviderManager-IA.smali
@@ -1374,7 +1055,7 @@ new file mode 100644
 index 00000000..d68a6e71
 --- /dev/null
 +++ b/smali_classes6/io/mesalabs/unica/KeyProviderManager.smali
-@@ -0,0 +1,106 @@
+@@ -0,0 +1,112 @@
 +.class public final Lio/mesalabs/unica/KeyProviderManager;
 +.super Ljava/lang/Object;
 +.source "KeyProviderManager.java"
@@ -1464,17 +1145,23 @@ index 00000000..d68a6e71
 +.method public static blacklist isKeyboxAvailable()Z
 +    .locals 2
 +
-+    invoke-static {}, Lio/mesalabs/unica/KeyProviderManager;->getProvider()Lio/mesalabs/unica/IKeyboxProvider;
-+
-+    move-result-object v0
-+
-+    if-nez v0, :cond_0
++    const-string v0, "persist.sys.unica.keybox"
 +
 +    const/4 v1, 0x0
++
++    invoke-static {v0, v1}, Landroid/os/SemSystemProperties;->getBoolean(Ljava/lang/String;Z)Z
++
++    move-result v0
++
++    if-nez v0, :cond_0
 +
 +    return v1
 +
 +    :cond_0
++    invoke-static {}, Lio/mesalabs/unica/KeyProviderManager;->getProvider()Lio/mesalabs/unica/IKeyboxProvider;
++
++    move-result-object v0
++
 +    invoke-interface {v0}, Lio/mesalabs/unica/IKeyboxProvider;->hasKeybox()Z
 +
 +    move-result v0

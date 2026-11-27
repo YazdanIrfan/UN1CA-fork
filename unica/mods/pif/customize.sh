@@ -1,16 +1,5 @@
 APPLY_PATCH "system" "system/framework/framework.jar" \
     "$MODPATH/framework.jar/0001-Introduce-PlayIntegrityHooks.patch"
-APPLY_PATCH "system" "system/framework/framework.jar" \
-    "$MODPATH/framework.jar/0002-Spoof-PIF-system-properties.patch"
-
-# SDK 37 child startup hook; install native virtualizer payload for a34x / One UI 9
-if [ -f "$MODPATH/native/payload/system/lib64/libunica_pif.so" ]; then
-    ADD_TO_WORK_DIR "$MODPATH/native/payload" "system" "system/lib64/libunica_pif.so" 0 0 644 "u:object_r:system_lib_file:s0"
-    ADD_TO_WORK_DIR "$MODPATH/native/payload" "system" "system/lib/libunica_pif.so" 0 0 644 "u:object_r:system_lib_file:s0"
-    APPLY_PATCH "system" "system/framework/framework.jar" \
-        "$MODPATH/framework.jar/0003-Initialize-native-PIF-in-app-child.patch"
-fi
-
 SMALI_PATCH "system" "system/framework/framework.jar" \
     "smali/android/app/Instrumentation.smali" "replace" \
     'newApplication(Ljava/lang/Class;Landroid/content/Context;)Landroid/app/Application;' \
@@ -26,11 +15,7 @@ SMALI_PATCH "system" "system/framework/framework.jar" \
 APPLY_PATCH "system" "system/framework/services.jar" \
     "$MODPATH/services.jar/0001-Introduce-PlayIntegrityHooks.patch"
 
-# The native ROM backend supplies the compatibility API later in module order.
-if [ ! -f "$APKTOOL_DIR/system/framework/framework.jar/smali_classes6/io/mesalabs/unica/KeyboxImitationHooks.smali" ] && \
-    { [ ! -f "$SRC_DIR/unica/mods/tee-simulator/module.prop" ] || \
-      [ -f "$SRC_DIR/unica/mods/tee-simulator/disable" ] || \
-      [[ "$SOURCE_PLATFORM_SDK_VERSION" -lt 35 ]]; }; then
+if [ ! -f "$APKTOOL_DIR/system/framework/framework.jar/smali_classes6/io/mesalabs/unica/KeyboxImitationHooks.smali" ]; then
     SMALI_PATCH "system" "system/framework/framework.jar" \
         "smali_classes6/io/mesalabs/unica/PlayIntegrityHooks.smali" "return" \
         'shouldBlockKeyAttestation()Z' 'true'

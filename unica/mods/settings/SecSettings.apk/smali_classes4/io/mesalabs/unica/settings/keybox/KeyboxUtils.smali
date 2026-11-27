@@ -4,8 +4,6 @@
 
 
 # static fields
-.field private static final GOOGLE_RKP_ROOT_PUBLIC_KEY:Ljava/lang/String; = "MHYwEAYHKoZIzj0CAQYFK4EEACIDYgAEI9ojcU7fPlsFCjxy6IRqzgeOoK0b+YsV9FPQywiyw8EQRTkJ9u3qwfnI4DGoSLlBqClTXJfgfCcZvs60FikNMHnu4fkRzObfgDkU2KNXezT9/RQ+XvNslxPHrHCowhGr"
-
 .field private static final GOOGLE_ROOT_PUBLIC_KEY:Ljava/lang/String; = "MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAr7bHgiuxpwHsK7Qui8xUFmOr75gvMsd/dTEDDJdSSxtf6An7xyqpRR90PL2abxM1dEqlXnf2tqw1Ne4Xwl5jlRfdnJLmN0pTy/4lj4/7tv0Sk3iiKkypnEUtR6WfMgH0QZfKHM1+di+y9TFRtv6y//0rb+T+W8a9nsNL/ggjnar86461qO0rOs2cXjp3kOG1FEJ5MVmFmBGtnrKpa73XpXyTqRxB/M0n1n/W9nGqC4FSYa04T6N5RIZGBN2z2MT5IKGbFlbC8UrW0DxW7AYImQQcHtGl/m00QLVWutHQoVJYnFPlXTcHYvASLu+RhhsbDmxMgJJ0mcDpvsC4PjvB+TxywElgS70vE0XmLD+OJtvsBslHZvPBKCOdT0MS+tgSOIfga+z1Z1g7+DVagf7quvmag8jfPioyKvxnK/EgsTUVi2ghzq8wm27ud/mIM7AY2qEORR8Go3TVB4HzWQgpZrt3i5MIlCaY504LzSRiigHCzAPlHws+W0rB5N+er5/2pJKnfBSDiCiFAVtCLOZ7gLiMm0jhO2B6tUXHI/+MRPjy02i59lINMRRev56GKtcd9qO/0kUJWdZTdA2XoS82ixPvZtXQpUpuL12ab+9EaDK8Z4RHJYYfCT3Q5vNAXaiWQ+8PTWm2QgBR/bkwSWc+NpUFgNPN9PvQi8WEg5UmAGMCAwEAAQ=="
 
 .field private static final REVOCATION_LIST_URL:Ljava/lang/String; = "https://android.googleapis.com/attestation/status"
@@ -33,7 +31,7 @@
 .end method
 
 .method public static hasKeyboxData(Landroid/content/Context;)Z
-    .locals 3
+    .locals 1
 
     invoke-virtual {p0}, Landroid/content/Context;->getContentResolver()Landroid/content/ContentResolver;
 
@@ -45,7 +43,7 @@
 
     move-result-object p0
 
-    if-eqz p0, :cond_check_file
+    if-eqz p0, :cond_0
 
     invoke-virtual {p0}, Ljava/lang/String;->trim()Ljava/lang/String;
 
@@ -55,45 +53,13 @@
 
     move-result p0
 
-    if-nez p0, :cond_empty
+    if-nez p0, :cond_0
 
     const/4 p0, 0x1
 
     return p0
 
-    :cond_empty
-    const/4 p0, 0x0
-
-    return p0
-
-    :cond_check_file
-    new-instance p0, Ljava/io/File;
-
-    const-string/jumbo v0, "/system/etc/security/keybox.xml"
-
-    invoke-direct {p0, v0}, Ljava/io/File;-><init>(Ljava/lang/String;)V
-
-    invoke-virtual {p0}, Ljava/io/File;->exists()Z
-
-    move-result v0
-
-    if-eqz v0, :cond_no_file
-
-    invoke-virtual {p0}, Ljava/io/File;->length()J
-
-    move-result-wide v0
-
-    const-wide/16 v2, 0x0
-
-    cmp-long p0, v0, v2
-
-    if-lez p0, :cond_no_file
-
-    const/4 p0, 0x1
-
-    return p0
-
-    :cond_no_file
+    :cond_0
     const/4 p0, 0x0
 
     return p0
@@ -124,7 +90,7 @@
 
     const-string v0, "persist.sys.unica.keybox"
 
-    const/4 v1, 0x1
+    const/4 v1, 0x0
 
     invoke-static {v0, v1}, Landroid/os/SemSystemProperties;->getBoolean(Ljava/lang/String;Z)Z
 
@@ -133,23 +99,7 @@
     return v0
 .end method
 
-.method static synthetic lambda$setKeyboxPrefSummary$0(Landroid/content/Context;Landroid/os/Handler;Landroidx/preference/Preference;)V
-    .locals 2
-
-    invoke-static {p0}, Lio/mesalabs/unica/settings/keybox/KeyboxUtils;->verifyKeybox(Landroid/content/Context;)I
-
-    move-result v0
-
-    new-instance v1, Lio/mesalabs/unica/settings/keybox/KeyboxUtils$$ExternalSyntheticLambda0;
-
-    invoke-direct {v1, v0, p2, p0}, Lio/mesalabs/unica/settings/keybox/KeyboxUtils$$ExternalSyntheticLambda0;-><init>(ILandroidx/preference/Preference;Landroid/content/Context;)V
-
-    invoke-virtual {p1, v1}, Landroid/os/Handler;->post(Ljava/lang/Runnable;)Z
-
-    return-void
-.end method
-
-.method static synthetic lambda$setKeyboxPrefSummary$1(ILandroidx/preference/Preference;Landroid/content/Context;)V
+.method static synthetic lambda$setKeyboxPrefSummary$0(ILandroidx/preference/Preference;Landroid/content/Context;)V
     .locals 5
 
     const-string v0, "unica_keybox_status_loaded"
@@ -208,6 +158,22 @@
     move-result p0
 
     invoke-virtual {p1, p0}, Landroidx/preference/Preference;->seslSetSummaryColor(I)V
+
+    return-void
+.end method
+
+.method static synthetic lambda$setKeyboxPrefSummary$1(Landroid/content/Context;Landroid/os/Handler;Landroidx/preference/Preference;)V
+    .locals 2
+
+    invoke-static {p0}, Lio/mesalabs/unica/settings/keybox/KeyboxUtils;->verifyKeybox(Landroid/content/Context;)I
+
+    move-result v0
+
+    new-instance v1, Lio/mesalabs/unica/settings/keybox/KeyboxUtils$$ExternalSyntheticLambda1;
+
+    invoke-direct {v1, v0, p2, p0}, Lio/mesalabs/unica/settings/keybox/KeyboxUtils$$ExternalSyntheticLambda1;-><init>(ILandroidx/preference/Preference;Landroid/content/Context;)V
+
+    invoke-virtual {p1, v1}, Landroid/os/Handler;->post(Ljava/lang/Runnable;)Z
 
     return-void
 .end method
@@ -371,23 +337,6 @@
 
     invoke-static {v2, v3, v0}, Landroid/provider/Settings$Secure;->putString(Landroid/content/ContentResolver;Ljava/lang/String;Ljava/lang/String;)Z
 
-    const-string v0, "unica_keybox_enabled"
-
-    const/4 v3, 0x1
-
-    invoke-static {v2, v0, v3}, Landroid/provider/Settings$Secure;->putInt(Landroid/content/ContentResolver;Ljava/lang/String;I)Z
-
-    const-string v0, "persist.sys.unica.keybox"
-
-    const-string v2, "true"
-
-    :try_start_prop
-    invoke-static {v0, v2}, Landroid/os/SemSystemProperties;->set(Ljava/lang/String;Ljava/lang/String;)V
-    :try_end_prop
-    .catch Ljava/lang/Exception; {:try_start_prop .. :try_end_prop} :catch_prop
-
-    :catch_prop
-
     const/4 v0, 0x0
 
     invoke-static {p0, v0}, Lio/mesalabs/unica/settings/keybox/KeyboxUtils;->showToast(Landroid/content/Context;I)V
@@ -480,9 +429,9 @@
 
     move-result-object v0
 
-    new-instance v1, Lio/mesalabs/unica/settings/keybox/KeyboxUtils$$ExternalSyntheticLambda1;
+    new-instance v1, Lio/mesalabs/unica/settings/keybox/KeyboxUtils$$ExternalSyntheticLambda0;
 
-    invoke-direct {v1, p0, v0, p1}, Lio/mesalabs/unica/settings/keybox/KeyboxUtils$$ExternalSyntheticLambda1;-><init>(Landroid/content/Context;Landroid/os/Handler;Landroidx/preference/Preference;)V
+    invoke-direct {v1, p0, v0, p1}, Lio/mesalabs/unica/settings/keybox/KeyboxUtils$$ExternalSyntheticLambda0;-><init>(Landroid/content/Context;Landroid/os/Handler;Landroidx/preference/Preference;)V
 
     invoke-static {v1}, Lcom/android/settingslib/utils/ThreadUtils;->postOnBackgroundThread(Ljava/lang/Runnable;)Lcom/google/common/util/concurrent/ListenableFuture;
 
@@ -789,18 +738,9 @@
 
     move-result v6
 
-    if-nez v6, :cond_algo_ec
-
-    const-string v6, "ec"
-
-    invoke-virtual {v6, v5}, Ljava/lang/String;->equalsIgnoreCase(Ljava/lang/String;)Z
-
-    move-result v6
-
     if-eqz v6, :cond_3
 
-    :cond_algo_ec
-    const-string v10, "ecdsa"
+    move-object v10, v5
 
     move/from16 v13, v21
 
@@ -955,108 +895,116 @@
     goto/16 :goto_0
 
     :cond_a
+    move v5, v9
+
     move/from16 v20, v12
 
     move/from16 v21, v13
 
-    const/4 v5, 0x0
+    if-ne v11, v5, :cond_10
 
-    if-eqz v20, :cond_ec_done
+    if-eqz v20, :cond_10
 
-    if-eqz v21, :cond_ec_done
+    if-eqz v21, :cond_10
 
+    if-eqz v14, :cond_10
+
+    if-nez v15, :cond_b
+
+    goto :goto_8
+
+    :cond_b
     invoke-virtual {v0}, Ljava/util/ArrayList;->isEmpty()Z
 
-    move-result v6
+    move-result v5
 
-    if-nez v6, :cond_ec_done
-
-    const/4 v5, 0x1
-
-    :cond_ec_done
-    const/4 v6, 0x0
-
-    if-eqz v14, :cond_rsa_done
-
-    if-eqz v15, :cond_rsa_done
+    if-nez v5, :cond_f
 
     invoke-virtual {v4}, Ljava/util/ArrayList;->isEmpty()Z
 
-    move-result v7
+    move-result v5
 
-    if-nez v7, :cond_rsa_done
+    if-eqz v5, :cond_c
 
-    const/4 v6, 0x1
+    goto :goto_7
 
-    :cond_rsa_done
-    or-int v7, v5, v6
+    :cond_c
+    const-string v5, "MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAr7bHgiuxpwHsK7Qui8xUFmOr75gvMsd/dTEDDJdSSxtf6An7xyqpRR90PL2abxM1dEqlXnf2tqw1Ne4Xwl5jlRfdnJLmN0pTy/4lj4/7tv0Sk3iiKkypnEUtR6WfMgH0QZfKHM1+di+y9TFRtv6y//0rb+T+W8a9nsNL/ggjnar86461qO0rOs2cXjp3kOG1FEJ5MVmFmBGtnrKpa73XpXyTqRxB/M0n1n/W9nGqC4FSYa04T6N5RIZGBN2z2MT5IKGbFlbC8UrW0DxW7AYImQQcHtGl/m00QLVWutHQoVJYnFPlXTcHYvASLu+RhhsbDmxMgJJ0mcDpvsC4PjvB+TxywElgS70vE0XmLD+OJtvsBslHZvPBKCOdT0MS+tgSOIfga+z1Z1g7+DVagf7quvmag8jfPioyKvxnK/EgsTUVi2ghzq8wm27ud/mIM7AY2qEORR8Go3TVB4HzWQgpZrt3i5MIlCaY504LzSRiigHCzAPlHws+W0rB5N+er5/2pJKnfBSDiCiFAVtCLOZ7gLiMm0jhO2B6tUXHI/+MRPjy02i59lINMRRev56GKtcd9qO/0kUJWdZTdA2XoS82ixPvZtXQpUpuL12ab+9EaDK8Z4RHJYYfCT3Q5vNAXaiWQ+8PTWm2QgBR/bkwSWc+NpUFgNPN9PvQi8WEg5UmAGMCAwEAAQ=="
 
-    if-nez v7, :cond_check_certs
+    move/from16 v6, v16
 
-    const/4 v5, 0x3
+    invoke-static {v5, v6}, Landroid/util/Base64;->decode(Ljava/lang/String;I)[B
 
-    invoke-static {v1, v5}, Lio/mesalabs/unica/settings/keybox/KeyboxUtils;->showToast(Landroid/content/Context;I)V
+    move-result-object v5
+
+    :try_start_5
+    invoke-virtual {v0}, Ljava/util/ArrayList;->getLast()Ljava/lang/Object;
+
+    move-result-object v0
+
+    check-cast v0, Ljava/lang/String;
+
+    invoke-static {v0}, Lio/mesalabs/unica/settings/keybox/KeyboxUtils;->parseCertificate(Ljava/lang/String;)Ljava/security/cert/X509Certificate;
+
+    move-result-object v0
+
+    invoke-virtual {v0}, Ljava/security/cert/X509Certificate;->getPublicKey()Ljava/security/PublicKey;
+
+    move-result-object v0
+
+    invoke-interface {v0}, Ljava/security/PublicKey;->getEncoded()[B
+
+    move-result-object v0
+
+    invoke-static {v0, v5}, Ljava/util/Arrays;->equals([B[B)Z
+
+    move-result v0
+
+    if-eqz v0, :cond_e
+
+    invoke-virtual {v4}, Ljava/util/ArrayList;->getLast()Ljava/lang/Object;
+
+    move-result-object v0
+
+    check-cast v0, Ljava/lang/String;
+
+    invoke-static {v0}, Lio/mesalabs/unica/settings/keybox/KeyboxUtils;->parseCertificate(Ljava/lang/String;)Ljava/security/cert/X509Certificate;
+
+    move-result-object v0
+
+    invoke-virtual {v0}, Ljava/security/cert/X509Certificate;->getPublicKey()Ljava/security/PublicKey;
+
+    move-result-object v0
+
+    invoke-interface {v0}, Ljava/security/PublicKey;->getEncoded()[B
+
+    move-result-object v0
+
+    invoke-static {v0, v5}, Ljava/util/Arrays;->equals([B[B)Z
+
+    move-result v0
+
+    if-nez v0, :cond_d
+
+    goto :goto_5
+
+    :cond_d
+    const/16 v19, 0x1
+
+    return v19
+
+    :cond_e
+    :goto_5
+    const/4 v6, 0x4
+
+    invoke-static {v1, v6}, Lio/mesalabs/unica/settings/keybox/KeyboxUtils;->showToast(Landroid/content/Context;I)V
+    :try_end_5
+    .catch Ljava/security/cert/CertificateException; {:try_start_5 .. :try_end_5} :catch_1
+    .catch Ljava/lang/IllegalArgumentException; {:try_start_5 .. :try_end_5} :catch_1
 
     const/16 v16, 0x0
 
     return v16
-
-    :cond_check_certs
-    :try_start_5
-    if-eqz v5, :cond_verify_rsa
-
-    invoke-virtual {v0}, Ljava/util/ArrayList;->iterator()Ljava/util/Iterator;
-
-    move-result-object v0
-
-    :goto_ec_loop
-    invoke-interface {v0}, Ljava/util/Iterator;->hasNext()Z
-
-    move-result v5
-
-    if-eqz v5, :cond_verify_rsa
-
-    invoke-interface {v0}, Ljava/util/Iterator;->next()Ljava/lang/Object;
-
-    move-result-object v5
-
-    check-cast v5, Ljava/lang/String;
-
-    invoke-static {v5}, Lio/mesalabs/unica/settings/keybox/KeyboxUtils;->parseCertificate(Ljava/lang/String;)Ljava/security/cert/X509Certificate;
-
-    goto :goto_ec_loop
-
-    :cond_verify_rsa
-    if-eqz v6, :cond_valid_success
-
-    invoke-virtual {v4}, Ljava/util/ArrayList;->iterator()Ljava/util/Iterator;
-
-    move-result-object v4
-
-    :goto_rsa_loop
-    invoke-interface {v4}, Ljava/util/Iterator;->hasNext()Z
-
-    move-result v5
-
-    if-eqz v5, :cond_valid_success
-
-    invoke-interface {v4}, Ljava/util/Iterator;->next()Ljava/lang/Object;
-
-    move-result-object v5
-
-    check-cast v5, Ljava/lang/String;
-
-    invoke-static {v5}, Lio/mesalabs/unica/settings/keybox/KeyboxUtils;->parseCertificate(Ljava/lang/String;)Ljava/security/cert/X509Certificate;
-
-    goto :goto_rsa_loop
-
-    :cond_valid_success
-    const/4 v0, 0x1
-
-    return v0
-    :try_end_5
-    .catch Ljava/security/cert/CertificateException; {:try_start_5 .. :try_end_5} :catch_1
-    .catch Ljava/lang/IllegalArgumentException; {:try_start_5 .. :try_end_5} :catch_1
 
     :catch_1
     move-exception v0
@@ -1067,8 +1015,24 @@
 
     invoke-static {v1, v5}, Lio/mesalabs/unica/settings/keybox/KeyboxUtils;->showToast(Landroid/content/Context;I)V
 
-    :goto_5
+    :goto_6
     const/16 v16, 0x0
+
+    return v16
+
+    :cond_f
+    :goto_7
+    const/4 v5, 0x3
+
+    invoke-static {v1, v5}, Lio/mesalabs/unica/settings/keybox/KeyboxUtils;->showToast(Landroid/content/Context;I)V
+
+    return v16
+
+    :cond_10
+    :goto_8
+    const/4 v5, 0x3
+
+    invoke-static {v1, v5}, Lio/mesalabs/unica/settings/keybox/KeyboxUtils;->showToast(Landroid/content/Context;I)V
 
     return v16
 
@@ -1081,9 +1045,7 @@
 
     invoke-static {v1, v2}, Lio/mesalabs/unica/settings/keybox/KeyboxUtils;->showToast(Landroid/content/Context;I)V
 
-    goto :goto_5
-
-    nop
+    goto :goto_6
 
     :sswitch_data_0
     .sparse-switch
@@ -1113,7 +1075,7 @@
 
     const/4 v2, -0x1
 
-    if-eqz p0, :cond_check_keybox_file
+    if-eqz p0, :cond_7
 
     invoke-virtual {p0}, Ljava/lang/String;->trim()Ljava/lang/String;
 
@@ -1125,49 +1087,6 @@
 
     if-eqz v3, :cond_0
 
-    :cond_check_keybox_file
-    new-instance v3, Ljava/io/File;
-
-    const-string/jumbo v4, "/system/etc/security/keybox.xml"
-
-    invoke-direct {v3, v4}, Ljava/io/File;-><init>(Ljava/lang/String;)V
-
-    invoke-virtual {v3}, Ljava/io/File;->exists()Z
-
-    move-result v4
-
-    if-eqz v4, :goto_2
-
-    :try_start_file
-    invoke-virtual {v3}, Ljava/io/File;->toPath()Ljava/nio/file/Path;
-
-    move-result-object v3
-
-    invoke-static {v3}, Ljava/nio/file/Files;->readAllBytes(Ljava/nio/file/Path;)[B
-
-    move-result-object v3
-
-    new-instance p0, Ljava/lang/String;
-
-    sget-object v4, Ljava/nio/charset/StandardCharsets;->UTF_8:Ljava/nio/charset/Charset;
-
-    invoke-direct {p0, v3, v4}, Ljava/lang/String;-><init>([BLjava/nio/charset/Charset;)V
-    :try_end_file
-    .catch Ljava/lang/Exception; {:try_start_file .. :try_end_file} :catch_file
-
-    invoke-virtual {p0}, Ljava/lang/String;->trim()Ljava/lang/String;
-
-    move-result-object v3
-
-    invoke-virtual {v3}, Ljava/lang/String;->isEmpty()Z
-
-    move-result v3
-
-    if-eqz v3, :cond_0
-
-    goto/16 :goto_2
-
-    :catch_file
     goto/16 :goto_2
 
     :cond_0
@@ -1404,8 +1323,6 @@
 
     move-result-object v4
 
-    invoke-virtual {v4}, Ljava/security/cert/X509Certificate;->checkValidity()V
-
     invoke-virtual {v4}, Ljava/security/cert/X509Certificate;->getSerialNumber()Ljava/math/BigInteger;
 
     move-result-object v4
@@ -1424,8 +1341,6 @@
 
     move-result-object v4
     :try_end_6
-    .catch Ljava/security/cert/CertificateExpiredException; {:try_start_6 .. :try_end_6} :catch_cert_expired
-    .catch Ljava/security/cert/CertificateNotYetValidException; {:try_start_6 .. :try_end_6} :catch_cert_expired
     .catch Ljava/security/cert/CertificateException; {:try_start_6 .. :try_end_6} :catch_0
     .catch Ljava/lang/IllegalArgumentException; {:try_start_6 .. :try_end_6} :catch_0
 
@@ -1437,13 +1352,6 @@
     const/4 p0, 0x0
 
     return p0
-
-    :catch_cert_expired
-    move-exception p0
-
-    invoke-static {v1, v0, p0}, Landroid/util/Log;->w(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
-
-    return v5
 
     :catch_0
     move-exception p0
